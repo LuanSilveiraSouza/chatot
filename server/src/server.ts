@@ -1,14 +1,19 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+import http from 'http';
+import { Socket } from 'socket.io';
 
-const app = express();
+import { app } from './app';
+import { io, connect } from './socket';
 
-app.use(bodyParser.json());
-app.use(cors({ origin: '*' }));
+const httpServer = http.createServer(app);
 
-app.use('/', (req: any, res: any) => {
-	return res.status(200).json({ msg: 'Hello World!' });
+connect(httpServer);
+
+io.on('connection', (socket: Socket) => {
+	console.log(socket.id);
+
+	io.on('disconnect', () => {
+		console.log('Disconnected');
+	});
 });
 
-app.listen(3030, () => console.log('Server running at port 3030'));
+httpServer.listen(3030, () => console.log('Server running at port 3030'));
