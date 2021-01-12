@@ -2,9 +2,8 @@
 
 if [ "$NODE_ENV" = "production" ];
 then
-    SCRIPT=prod
+    yarn build
+    yarn prod
 else
-    SCRIPT=dev
+    yarn dev
 fi
-
-yarn $SCRIPT
