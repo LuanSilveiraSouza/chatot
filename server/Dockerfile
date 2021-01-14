@@ -11,6 +11,6 @@ RUN yarn
 
 COPY . /app/
 
-EXPOSE 3030
+RUN yarn build
 
-ENTRYPOINT ["sh", "docker-entrypoint.sh"]
+EXPOSE $PORT

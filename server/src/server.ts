@@ -9,4 +9,6 @@ connect(httpServer);
 
 getRoutes();
 
-httpServer.listen(3030, () => console.log('Server running at port 3030'));
+const port = process.env.PORT || 3030;
+
+httpServer.listen(port, () => console.log(`Server running at port ${port}`));
