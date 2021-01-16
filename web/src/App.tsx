@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
 import { Chat } from './pages/Chat';
 import { Home } from './pages/Home';
 
 const App: React.FC = () => {
-
   return (
     <Router>
       <Switch>
-        <Route path='/' exact>
+        <Route path="/" exact>
           <Home />
         </Route>
-        <Route path='/chat'>
+        <Route path="/chat">
           <Chat />
         </Route>
       </Switch>

@@ -3,6 +3,7 @@ import { Text, Button, Flex, Image, Heading, Input } from '@chakra-ui/react';
 import { useHistory } from 'react-router-dom';
 
 import { Layout } from '../components/Layout';
+import { socket, connectSocket } from '../services/socket';
 
 import conversationImg from '../assets/conversation.png';
 
@@ -12,11 +13,14 @@ const Home: React.FC = () => {
   const [name, setName] = useState<string>('');
 
   const handleLogin = () => {
-    console.log(name);
+    connectSocket();
+    socket.connect();
+
     setName('');
 
     history.push('/chat');
   };
+
   return (
     <Layout>
       <Flex

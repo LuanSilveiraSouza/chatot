@@ -8,7 +8,7 @@ const Layout: React.FC = ({ children }) => {
       w="100%"
       bg="gray.50"
       p={4}
-      justifyContent="center"
+      flexDirection='column'
     >
       {children}
     </Flex>
