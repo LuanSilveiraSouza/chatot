@@ -16,10 +16,9 @@
     "resolveJsonModule": true,
     "baseUrl": "./",
     "paths": {
-      "@root": ["./"],
-      "@domain/*": ["./domain/*"],
-      "@usecase": ["./usecase/*"],
-      "@socket/*": ["./socket/*"]
+      "@domain/*": ["./src/domain/*"],
+      "@usecase/*": ["./src/usecase/*"],
+      "@socket/*": ["./src/socket/*"]
     }
   },
   "include": ["src"],
