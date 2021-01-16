@@ -1,11 +1,11 @@
 import { Socket } from 'socket.io';
-import { SocketRoute } from '../@types/socket';
+import { SocketRoute } from '../ports/socket';
 
 const routes: SocketRoute[] = [
 	{
 		path: 'login',
 		handler: (socket: Socket, data: any) => {
-			socket.emit('login', data);
+      socket.emit('login', data);
 		},
 	},
 	{

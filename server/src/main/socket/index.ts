@@ -1,13 +1,13 @@
 import { Server as HttpServer } from 'http';
 import { Server, Socket } from 'socket.io';
-import { SocketRoute } from '../@types/socket';
+import { SocketRoute } from '../ports/socket';
 import { routes } from './routes';
 
 let io: Server;
 
-const connect = (httpServer: HttpServer) => {
+const connect = (httpServer?: HttpServer) => {
 	if (!io) {
-		io = new Server(httpServer);
+		io = httpServer ? new Server(httpServer) : new Server();
 	}
 };
 

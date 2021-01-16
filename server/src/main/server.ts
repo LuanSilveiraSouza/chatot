@@ -12,3 +12,5 @@ getRoutes();
 const port = process.env.PORT || 3030;
 
 httpServer.listen(port, () => console.log(`Server running at port ${port}`));
+
+export { httpServer, port };
