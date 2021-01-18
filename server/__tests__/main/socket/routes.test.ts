@@ -1,4 +1,6 @@
 import { Socket, io as socketio } from 'socket.io-client';
+import { userRepository } from '../../../src/main/config/userRepository';
+import { User } from '../../../src/domain/User';
 import { httpServer, port } from '../../../src/main/server';
 
 describe('Server Tests', () => {
@@ -6,6 +8,8 @@ describe('Server Tests', () => {
   let socketB: Socket;
 
   beforeEach((done) => {
+    userRepository.users = [];
+
     socket = socketio(`ws://localhost:${port}`, {
       path: '/socket.io',
     });
@@ -44,20 +48,6 @@ describe('Server Tests', () => {
   afterAll((done) => {
     httpServer.close(() => done());
   });
-
-  test('It should emit a valid login action', (done) => {
-    socket.emit('login', { id: '000', name: 'test_user' });
-
-    socket.on('login', (data: any) => {
-      try {
-        expect(data).toEqual({ id: '000', name: 'test_user' });
-
-        done();
-      } catch (error) {
-        done(error);
-      }
-    });
-  });
   test('It should emit a valid offline action', (done) => {
     const expected = socket.id;
 
@@ -85,12 +75,36 @@ describe('Server Tests', () => {
       }
     });
   });
-  test('It should emit a valid login action and another socket receive it', (done) => {
-    socket.emit('login', { id: '000', name: 'test_user' });
+  test('It should emit a valid login', (done) => {
+    socket.emit('login', { name: 'test_user' });
 
-    socketB.on('login', (data: any) => {
+    socket.on('login_success', (data: User) => {
+      expect(data.name).toBe('test_user');
+      expect(parseInt(data.id)).toBeLessThan(new Date().getTime());
+
+      done();
+    });
+  });
+  test('It should emit a invalid login', (done) => {
+    socket.emit('login', { test: 'whatever' });
+
+    socket.on('login_error', (data: any) => {
+      expect(User.isUser(data)).toBeFalsy();
+      expect(data).toEqual({ msg: 'User in wrong format' });
+
+      done();
+    });
+  });
+  test('It should emit a valid login action and another socket receive it', (done) => {
+    socket.emit('login', { name: 'test_user' });
+
+    socketB.on('user_list', (data: any) => {
       try {
-        expect(data).toEqual({ id: '000', name: 'test_user' });
+        console.log(data);
+
+        expect(data).toHaveLength(1);
+        expect(User.isUser(data[0])).toBeTruthy();
+        expect(data[0].name).toBe('test_user');
 
         done();
       } catch (error) {
