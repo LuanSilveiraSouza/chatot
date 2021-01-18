@@ -15,10 +15,8 @@ const connect = (httpServer?: HttpServer) => {
 
 const getRoutes = () => {
   io.on('connection', (socket: Socket) => {
-    console.log(socket.id);
-
     routes.forEach((route: SocketRoute) =>
-      socket.on(route.path, (data) => route.handler(socket, data))
+      socket.on(route.path, (data) => route.handler(io, socket, data))
     );
   });
 };

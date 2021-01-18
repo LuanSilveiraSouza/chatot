@@ -1,17 +1,23 @@
-import { Socket } from 'socket.io';
+import { Socket, Server } from 'socket.io';
 import { SocketRoute } from '../ports/socket';
 
 const routes: SocketRoute[] = [
   {
     path: 'login',
-    handler: (socket: Socket, data: any) => {
-      socket.emit('login', data);
+    handler: (server: Server, socket: Socket, data: any) => {
+      server.emit('login', data);
+    },
+  },
+  {
+    path: 'message',
+    handler: (server: Server, socket: Socket, data: any) => {
+      server.emit('message', data);
     },
   },
   {
     path: 'disconnect',
-    handler: (socket: Socket, data) => {
-      socket.emit('offline', data);
+    handler: (server: Server, socket: Socket, data: any) => {
+      server.emit('offline', socket.id);
     },
   },
 ];

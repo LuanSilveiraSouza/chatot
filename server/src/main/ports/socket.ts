@@ -1,6 +1,6 @@
-import { Socket } from 'socket.io';
+import { Socket, Server } from 'socket.io';
 
 export interface SocketRoute {
     path: string;
-    handler: (socket: Socket, data: any) => void;
+    handler: (server: Server, socket: Socket, data: any) => void;
 }

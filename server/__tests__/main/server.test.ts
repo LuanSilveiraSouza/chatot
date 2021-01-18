@@ -2,8 +2,8 @@ import request from 'supertest';
 import { httpServer } from '../../src/main/server';
 
 describe('Server Tests', () => {
-  afterAll(async (done) => {
-    await httpServer.close();
+  afterAll((done) => {
+    httpServer.close();
 
     done();
   });
