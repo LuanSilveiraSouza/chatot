@@ -1,3 +1,6 @@
+import { Message } from '../../domain/Message';
+import { messageRepository } from '../config/messageRepository';
+import { createMessage } from '../../usecase/MessageCases';
 import { Socket, Server } from 'socket.io';
 import { User } from '../../domain/User';
 import { createUser } from '../../usecase/UserCases';
@@ -23,7 +26,18 @@ const routes: SocketRoute[] = [
   {
     path: 'message',
     handler: (server: Server, socket: Socket, data: any) => {
-      server.emit('message', data);
+      if ('content' in data && 'user' in data) {
+        const message = new Message(
+          new Date().getTime().toString(),
+          data.user,
+          new Date(),
+          data.content
+        );
+
+        createMessage(messageRepository, message);
+        server.emit('message', message);
+      }
+      socket.emit('message_error', { msg: 'Content or user not informed' });
     },
   },
   {

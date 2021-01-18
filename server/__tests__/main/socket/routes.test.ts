@@ -2,6 +2,7 @@ import { Socket, io as socketio } from 'socket.io-client';
 import { userRepository } from '../../../src/main/config/userRepository';
 import { User } from '../../../src/domain/User';
 import { httpServer, port } from '../../../src/main/server';
+import { Message } from '../../../src/domain/Message';
 
 describe('Server Tests', () => {
   let socket: Socket;
@@ -62,19 +63,6 @@ describe('Server Tests', () => {
     });
     socket.disconnect();
   });
-  test('It should emit a valid message action', (done) => {
-    socket.emit('message', { content: 'Hello!' });
-
-    socket.on('message', (data: any) => {
-      try {
-        expect(data).toEqual({ content: 'Hello!' });
-
-        done();
-      } catch (error) {
-        done(error);
-      }
-    });
-  });
   test('It should emit a valid login', (done) => {
     socket.emit('login', { name: 'test_user' });
 
@@ -95,13 +83,11 @@ describe('Server Tests', () => {
       done();
     });
   });
-  test('It should emit a valid login action and another socket receive it', (done) => {
+  test('It should emit a valid login and another socket receive it', (done) => {
     socket.emit('login', { name: 'test_user' });
 
     socketB.on('user_list', (data: any) => {
       try {
-        console.log(data);
-
         expect(data).toHaveLength(1);
         expect(User.isUser(data[0])).toBeTruthy();
         expect(data[0].name).toBe('test_user');
@@ -112,12 +98,39 @@ describe('Server Tests', () => {
       }
     });
   });
-  test('It should emit a valid message action and another socket receive it', (done) => {
-    socketB.emit('message', { content: 'Hello Buddy!' });
+  test('It should emit a valid message and another socket receive it', (done) => {
+    expect.assertions(2);
+
+    socket.emit('login', { name: 'test_user' });
+
+    socket.on('login_success', (data: User) => {
+      socket.emit('message', { user: data, content: 'Hello Buddy!' });
+    });
 
     socket.on('message', (data: any) => {
       try {
-        expect(data).toEqual({ content: 'Hello Buddy!' });
+        expect(Message.isMessage(data)).toBeTruthy();
+        expect(data.content).toBe('Hello Buddy!');
+
+        done();
+      } catch (error) {
+        done(error);
+      }
+    });
+  });
+  test('It should emit a invalid message', (done) => {
+    expect.assertions(2);
+
+    socket.emit('login', { name: 'test_user' });
+
+    socket.on('login_success', (data: User) => {
+      socket.emit('message', { user: data });
+    });
+
+    socket.on('message_error', (data: any) => {
+      try {
+        expect(Message.isMessage(data)).toBeFalsy();
+        expect(data).toEqual({ msg: 'Content or user not informed' });
 
         done();
       } catch (error) {
