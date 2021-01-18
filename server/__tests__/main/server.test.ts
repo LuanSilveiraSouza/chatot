@@ -3,9 +3,7 @@ import { httpServer } from '../../src/main/server';
 
 describe('Server Tests', () => {
   afterAll((done) => {
-    httpServer.close();
-
-    done();
+    httpServer.close(() => done());
   });
 
   test('It should verify if server process is running', async () => {

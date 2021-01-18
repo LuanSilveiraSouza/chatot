@@ -7,7 +7,7 @@
     "build": "npx tsc",
     "prod": "node ./dist/main/server.js",
     "dev": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules --no-notify ./src/main/server.ts",
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   },
   "dependencies": {
     "body-parser": "^1.19.0",

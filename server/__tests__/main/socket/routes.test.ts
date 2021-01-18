@@ -42,9 +42,7 @@ describe('Server Tests', () => {
   });
 
   afterAll((done) => {
-    httpServer.close();
-
-    done();
+    httpServer.close(() => done());
   });
 
   test('It should emit a valid login action', (done) => {
@@ -91,11 +89,7 @@ describe('Server Tests', () => {
     socket.emit('login', { id: '000', name: 'test_user' });
 
     socketB.on('login', (data: any) => {
-      console.log(data);
-
       try {
-        console.log(data);
-
         expect(data).toEqual({ id: '000', name: 'test_user' });
 
         done();
@@ -108,11 +102,7 @@ describe('Server Tests', () => {
     socketB.emit('message', { content: 'Hello Buddy!' });
 
     socket.on('message', (data: any) => {
-      console.log(data);
-
       try {
-        console.log(data);
-
         expect(data).toEqual({ content: 'Hello Buddy!' });
 
         done();

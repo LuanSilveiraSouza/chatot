@@ -8,7 +8,7 @@ describe('MemoryMessageRepository Tests', () => {
   test('It should add a message', () => {
     const repository = new MemoryMessageRepository();
 
-    const message = new Message('000', user.id, new Date(), 'Testing!');
+    const message = new Message('000', user, new Date(), 'Testing!');
 
     expect(repository.messages).toHaveLength(0);
 

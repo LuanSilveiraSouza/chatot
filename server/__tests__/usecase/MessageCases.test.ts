@@ -9,14 +9,14 @@ describe('MessageCases Tests', () => {
   test('It should add a message', () => {
     const repository = new MemoryMessageRepository();
 
-    const message = new Message('000', user.id, new Date(), 'Testing!');
+    const message = new Message('000', user, new Date(), 'Testing!');
 
     expect(createMessage(repository, message)).toBeTruthy();
   });
   test('It should add a message and edit it after the addition', () => {
     const repository = new MemoryMessageRepository();
 
-    const message = new Message('000', user.id, new Date(), 'Testing!');
+    const message = new Message('000', user, new Date(), 'Testing!');
 
     expect(createMessage(repository, message)).toBeTruthy();
 

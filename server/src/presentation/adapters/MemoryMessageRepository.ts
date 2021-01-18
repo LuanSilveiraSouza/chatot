@@ -15,7 +15,7 @@ export class MemoryMessageRepository implements MessageRepository {
   editMessage(id: string, content: string, date: Date): void {
     this.messages = this.messages.map((message) => {
       if (message.id === id) {
-        return new Message(message.id, message.userId, date, content);
+        return new Message(message.id, message.user, date, content);
       }
       return message;
     });

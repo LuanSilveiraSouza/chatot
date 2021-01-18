@@ -6,4 +6,8 @@ export class User {
     this.id = id;
     this.name = name;
   }
+
+  static isUser(user: any): user is User {
+    return (user as User).id !== undefined && (user as User).name !== undefined;
+  }
 }
