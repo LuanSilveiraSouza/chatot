@@ -1,26 +1,44 @@
-import React, { useEffect } from 'react';
-import { Text, Flex, Heading, Button } from '@chakra-ui/react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { Text, Flex, Heading, Button, Input } from '@chakra-ui/react';
+
+import { userState } from '../context/atoms';
+import { socket } from '../services/socket';
 
 import { Layout } from '../components/Layout';
-import { socket } from '../services/socket';
 
 const Chat: React.FC = () => {
   const history = useHistory();
 
+  const [user, setUser] = useRecoilState(userState);
+
+  const [text, setText] = useState<string>('');
+  const [messages, setMessages] = useState<any[]>([]);
+
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Socket connected!');
+    socket.on('user_list', (data: any) => {
+      console.log(data);
     });
 
-    socket.on('login', (data: any) => {
+    socket.on('message', (data: any) => {
       console.log(data);
+
+      const messageArray = messages;
+      messageArray.push(data);
+      setMessages(messageArray);
     });
 
     socket.on('offline', (data: any) => {
       console.log(data);
     });
-  });
+  }, []);
+
+  const sendMessage = () => {
+    socket.emit('message', { user, content: text });
+
+    setText('');
+  };
 
   const handleLogoff = () => {
     socket.disconnect();
@@ -33,13 +51,16 @@ const Chat: React.FC = () => {
         Fazer Logoff
       </Button>
 
-      <Heading>Chat Screen</Heading>
+      <Flex alignItems="center" justifyContent="center" flexDirection="column">
+        <Heading>Chat Screen</Heading>
 
-      <Button
-        onClick={() => socket.emit('login', { id: '000', name: 'test_user' })}
-      >
-        Login
-      </Button>
+        {messages.map((message) => (
+          <Text key={message.id}>{message.content}</Text>
+        ))}
+      </Flex>
+
+      <Input value={text} onChange={(event) => setText(event.target.value)} />
+      <Button onClick={sendMessage}>Enviar</Button>
     </Layout>
   );
 };

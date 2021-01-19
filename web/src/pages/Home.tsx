@@ -1,24 +1,42 @@
 import React, { useState } from 'react';
-import { Text, Button, Flex, Image, Heading, Input } from '@chakra-ui/react';
 import { useHistory } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+import { Text, Button, Flex, Image, Heading, Input } from '@chakra-ui/react';
 
-import { Layout } from '../components/Layout';
+import { userState } from '../context/atoms';
 import { socket, connectSocket } from '../services/socket';
 
+import { Layout } from '../components/Layout';
 import conversationImg from '../assets/conversation.png';
 
 const Home: React.FC = () => {
   const history = useHistory();
 
+  const setUser = useSetRecoilState(userState);
   const [name, setName] = useState<string>('');
 
   const handleLogin = () => {
-    connectSocket();
-    socket.connect();
+    if (!socket || !socket.connected) {
+      connectSocket();
+      socket.connect();
+    }
 
-    setName('');
+    socket.on('login_success', (data: any) => {
+      alert('Conectado!');
 
-    history.push('/chat');
+      setUser(() => {
+        return { id: data.id, name: data.name };
+      });
+
+      history.push('/chat');
+    });
+
+    socket.on('login_error', (data: any) => {
+      alert('Login Inválido');
+      setName('');
+    });
+
+    socket.emit('login', { name });
   };
 
   return (

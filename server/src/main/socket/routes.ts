@@ -12,7 +12,7 @@ const routes: SocketRoute[] = [
     path: 'login',
     handler: (server: Server, socket: Socket, data: any) => {
       if ('name' in data) {
-        const user = new User(new Date().getTime().toString(), data.name);
+        const user = new User(socket.id, data.name);
 
         createUser(userRepository, user);
 
