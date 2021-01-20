@@ -22,11 +22,9 @@ const Chat: React.FC = () => {
     });
 
     socket.on('message', (data: any) => {
-      console.log(data);
-
-      const messageArray = messages;
-      messageArray.push(data);
-      setMessages(messageArray);
+      if (messages.length < 1 || messages[messages?.length - 1].id != data.id) {
+        setMessages((oldArray) => [...oldArray, data]);
+      }
     });
 
     socket.on('offline', (data: any) => {
@@ -35,7 +33,9 @@ const Chat: React.FC = () => {
   }, []);
 
   const sendMessage = () => {
-    socket.emit('message', { user, content: text });
+    if (text) {
+      socket.emit('message', { user, content: text });
+    }
 
     setText('');
   };
@@ -51,16 +51,24 @@ const Chat: React.FC = () => {
         Fazer Logoff
       </Button>
 
-      <Flex alignItems="center" justifyContent="center" flexDirection="column">
+      <Flex
+        alignItems="center"
+        justifyContent="center"
+        flexDirection="column"
+        w="50%"
+      >
         <Heading>Chat Screen</Heading>
 
-        {messages.map((message) => (
-          <Text key={message.id}>{message.content}</Text>
-        ))}
+        <Flex justifyContent="center" flexDirection="column" w="50%">
+          {messages.map((message) => (
+            <Text key={message.id}>
+              {message.user?.name}: {message.content}
+            </Text>
+          ))}
+        </Flex>
+        <Input value={text} onChange={(event) => setText(event.target.value)} />
+        <Button onClick={sendMessage}>Enviar</Button>
       </Flex>
-
-      <Input value={text} onChange={(event) => setText(event.target.value)} />
-      <Button onClick={sendMessage}>Enviar</Button>
     </Layout>
   );
 };
