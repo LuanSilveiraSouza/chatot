@@ -3,7 +3,7 @@ import { messageRepository } from '../config/messageRepository';
 import { createMessage } from '../../usecase/MessageCases';
 import { Socket, Server } from 'socket.io';
 import { User } from '../../domain/User';
-import { createUser } from '../../usecase/UserCases';
+import { createUser, removeUser } from '../../usecase/UserCases';
 import { userRepository } from '../config/userRepository';
 import { SocketRoute } from '../ports/socket';
 
@@ -43,6 +43,7 @@ const routes: SocketRoute[] = [
   {
     path: 'disconnect',
     handler: (server: Server, socket: Socket, data: any) => {
+      removeUser(userRepository, socket.id);
       server.emit('offline', socket.id);
     },
   },

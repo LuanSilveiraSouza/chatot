@@ -12,23 +12,26 @@ const Chat: React.FC = () => {
   const history = useHistory();
 
   const [user, setUser] = useRecoilState(userState);
+  const [userList, setUserList] = useState<any>([]);
 
   const [text, setText] = useState<string>('');
   const [messages, setMessages] = useState<any[]>([]);
 
   useEffect(() => {
     socket.on('user_list', (data: any) => {
-      console.log(data);
+      setUserList(data);
     });
 
     socket.on('message', (data: any) => {
-      if (messages.length < 1 || messages[messages?.length - 1].id != data.id) {
+      if (messages.length < 1 || messages.some((msg) => msg.id == data.id)) {
         setMessages((oldArray) => [...oldArray, data]);
       }
     });
 
     socket.on('offline', (data: any) => {
-      console.log(data);
+      setUserList((userList: any[]) =>
+        userList.filter((user: any) => user.id !== data)
+      );
     });
   }, []);
 
@@ -47,27 +50,60 @@ const Chat: React.FC = () => {
 
   return (
     <Layout>
-      <Button colorScheme="teal" alignSelf="start" onClick={handleLogoff}>
-        Fazer Logoff
-      </Button>
+      <Flex alignItems="center" w="100%" px={5}>
+        <Heading marginRight={10}>{user.name}</Heading>
+        <Button colorScheme="teal" alignSelf="start" onClick={handleLogoff}>
+          Fazer Logoff
+        </Button>
+      </Flex>
 
       <Flex
         alignItems="center"
         justifyContent="center"
         flexDirection="column"
-        w="50%"
+        marginTop={10}
+        alignSelf="center"
+        w="80%"
+        h="80%"
       >
-        <Heading>Chat Screen</Heading>
+        <Heading alignSelf="self-start">Chat</Heading>
 
-        <Flex justifyContent="center" flexDirection="column" w="50%">
-          {messages.map((message) => (
-            <Text key={message.id}>
-              {message.user?.name}: {message.content}
-            </Text>
-          ))}
+        <Flex w="100%">
+          <Flex w="15%"></Flex>
+          <Flex
+            borderTop="2px"
+            borderColor="teal.400"
+            alignItems="self-start"
+            flexDirection="column"
+            w="70%"
+            h="50vh"
+            my={5}
+            overflowY="auto"
+          >
+            {messages.map((message) => (
+              <Text key={message.id} fontSize={20}>
+                {message.user?.name}: {message.content}
+              </Text>
+            ))}
+          </Flex>
+          <Flex w="15%" px={5} flexDirection="column" alignItems="center">
+            <Text>Users Online: {userList.length}</Text>
+            {userList.map((user: any) => (
+              <Text key={user.id}>{user.name}</Text>
+            ))}
+          </Flex>
         </Flex>
-        <Input value={text} onChange={(event) => setText(event.target.value)} />
-        <Button onClick={sendMessage}>Enviar</Button>
+
+        <Flex alignItems="self-start" alignSelf="center" w="70%">
+          <Input
+            value={text}
+            onChange={(event) => setText(event.target.value)}
+            marginRight={10}
+          />
+          <Button colorScheme="teal" onClick={sendMessage}>
+            Enviar
+          </Button>
+        </Flex>
       </Flex>
     </Layout>
   );
