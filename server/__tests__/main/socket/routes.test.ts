@@ -68,7 +68,6 @@ describe('Server Tests', () => {
 
     socket.on('login_success', (data: User) => {
       expect(data.name).toBe('test_user');
-      expect(parseInt(data.id)).toBeLessThan(new Date().getTime());
 
       done();
     });

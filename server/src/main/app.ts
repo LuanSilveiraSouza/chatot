@@ -7,8 +7,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors({ origin: '*' }));
 
-app.use('/', (req: any, res: any) => {
-	return res.status(200).json({ msg: 'Hello World!' });
+app.use('/', async (req: any, res: any) => {
+  return res.status(200).json({ msg: 'Hello World!' });
 });
 
 export { app };
