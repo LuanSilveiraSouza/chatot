@@ -21,9 +21,9 @@ export class MemoryMessageRepository implements MessageRepository {
     });
   }
 
-  getMessage(id: string): Message | null {
+  async getMessage(id: string): Promise<Message | null> {
     const requestedMessage = this.messages.find((message) => message.id === id);
 
-    return requestedMessage || null;
+    return await requestedMessage || null;
   }
 }

@@ -6,9 +6,9 @@ export class Message {
   public content: string;
   public date: Date;
 
-  constructor(id: string, User: User, date: Date, content?: string) {
+  constructor(id: string, user: User, date: Date, content?: string) {
     this.id = id;
-    this.user = User;
+    this.user = user;
     this.date = date || new Date();
     this.content = content || '';
   }

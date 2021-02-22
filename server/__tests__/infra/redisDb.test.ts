@@ -3,6 +3,7 @@ import {
   getAsync,
   setAsync,
   getKeysAsync,
+  quitAsync
 } from '../../src/infra/redisDb';
 
 describe('Server Tests', () => {
@@ -15,5 +16,7 @@ describe('Server Tests', () => {
       id: '000',
       content: 'This is a test',
     });
+
+    await quitAsync();
   });
 });
