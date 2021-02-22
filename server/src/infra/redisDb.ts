@@ -2,7 +2,8 @@ import redis from 'redis';
 import { promisify } from 'util';
 
 const redisDb = redis.createClient({
-  host: 'localhost',
+  host: 'redis',
+  db: process.env.REDIS_DATABASE,
 });
 
 const getAsync = promisify(redisDb.get).bind(redisDb);

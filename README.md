@@ -59,11 +59,11 @@ $ docker-compose -f docker-compose.yml up
 # Dev mode
 $ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
 
+# Test
+$ docker-compose -f docker-compose.yml -f docker-compose.test.yml run --rm app
+
 # Build
 $ npm build
-
-# Test
-$ npm test
 ```
 
 ## Frontend
