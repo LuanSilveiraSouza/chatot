@@ -18,4 +18,9 @@ describe('MemoryMessageRepository Tests', () => {
     expect(repository.messages[0]).toBeInstanceOf(Message);
     expect(repository.messages[0].id).toBe(message.id);
   });
+  test('It should retrieve a message that dont exists', async () => {
+    const repository = new MemoryMessageRepository();
+
+    expect(await repository.getMessage('test')).toBeNull();
+  });
 });
