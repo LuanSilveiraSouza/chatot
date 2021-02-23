@@ -26,4 +26,8 @@ export class MemoryMessageRepository implements MessageRepository {
 
     return await requestedMessage || null;
   }
+
+  async getAllMessages(): Promise<Array<Message>> {
+    return this.messages;
+  }
 }

@@ -10,17 +10,31 @@ export class RedisMessageRepository implements MessageRepository {
   editMessage(id: string, content: string, date: Date): void {}
 
   async getMessage(id: string): Promise<Message | null> {
-    let requestedMessage = null;
+    const result = await getAsync(id);
 
-    requestedMessage = JSON.parse((await getAsync(id)) || '');
+    const requestedMessage = result ? JSON.parse(result) : null;
 
-    return (
-      new Message(
-        requestedMessage.id,
-        requestedMessage.user,
-        requestedMessage.date,
-        requestedMessage.content
-      ) || null
-    );
+    return requestedMessage
+      ? new Message(
+          requestedMessage.id,
+          requestedMessage.user,
+          requestedMessage.date,
+          requestedMessage.content
+        )
+      : null;
+  }
+
+  async getAllMessages(): Promise<Array<Message>> {
+    const keys = await getKeysAsync('*');
+
+    const messages: Message[] = [];
+
+    for (const key of keys.reverse()) {
+      const message = await this.getMessage(key);
+
+      if (message) messages.push(message);
+    }
+
+    return messages;
   }
 }
