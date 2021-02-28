@@ -21,7 +21,9 @@ const Chat: React.FC = () => {
 
   const inputRef = useRef(null);
 
-  useEffect(() => {
+  useEffect((): any => {
+    let mounted = true;
+
     socket.on('user_list', (data: any) => {
       setUserList(data);
     });
@@ -37,14 +39,16 @@ const Chat: React.FC = () => {
     });
 
     socket.on('offline', (data: any) => {
-      toast({
-        title: 'User Offline',
-        description: `User ${data.name} left the chat.`,
-        status: 'success',
-        position: 'top-right',
-        duration: 1000,
-        isClosable: true,
-      });
+      if (mounted) {
+        toast({
+          title: 'User Offline',
+          description: `User ${data.name} left the chat.`,
+          status: 'success',
+          position: 'top-right',
+          duration: 1000,
+          isClosable: true,
+        });
+      }
     });
 
     document.addEventListener('keyup', (event) => {
@@ -52,6 +56,11 @@ const Chat: React.FC = () => {
         sendMessage();
       }
     });
+
+    return () => {
+      mounted = false;
+      socket.close();
+    };
   }, []);
 
   const sendMessage = () => {
@@ -100,6 +109,7 @@ const Chat: React.FC = () => {
             h="50vh"
             pr={2}
             my={5}
+            overflowY="auto"
           >
             {messages.map((message) => (
               <Text

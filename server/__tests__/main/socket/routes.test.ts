@@ -49,16 +49,24 @@ describe('Server Tests', () => {
   afterAll((done) => {
     httpServer.close(() => done());
   });
+
   test('It should emit a valid offline action', (done) => {
     const expected = socket.id;
 
-    socketB.on('offline', (data: any) => {
-      try {
-        expect(data).toBe(expected);
+    socket.emit('login', { name: 'test_user' });
 
+    socketB.on('offline', (data: any) => {
+      if (data) {
+        try {
+          expect(data.id).toBe(expected);
+          expect(data.name).toBe('test_user');
+
+          done();
+        } catch (error) {
+          done(error);
+        }
+      } else {
         done();
-      } catch (error) {
-        done(error);
       }
     });
     socket.disconnect();

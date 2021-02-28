@@ -12,6 +12,9 @@ export const createUser = (repository: UserRepository, user: User): boolean => {
   return false;
 };
 
-export const removeUser = (repository: UserRepository, id: string): User | null => {
-  return repository.removeUser(id);;
+export const removeUser = (
+  repository: UserRepository,
+  id: string
+): User | null => {
+  return repository.removeUser(id);
 };
