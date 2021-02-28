@@ -29,12 +29,14 @@ export class RedisMessageRepository implements MessageRepository {
 
     const messages: Message[] = [];
 
-    for (const key of keys.reverse()) {
+    for (const key of keys) {
       const message = await this.getMessage(key);
 
       if (message) messages.push(message);
     }
 
-    return messages;
+    return messages.sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
   }
 }

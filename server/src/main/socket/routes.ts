@@ -10,7 +10,7 @@ import { SocketRoute } from '../ports/socket';
 const routes: SocketRoute[] = [
   {
     path: 'login',
-    handler: (server: Server, socket: Socket, data: any) => {
+    handler: async (server: Server, socket: Socket, data: any) => {
       if ('name' in data) {
         const user = new User(socket.id, data.name);
 
@@ -18,6 +18,7 @@ const routes: SocketRoute[] = [
 
         socket.emit('login_success', user);
         server.emit('user_list', userRepository.users);
+        server.emit('messages', await messageRepository.getAllMessages());
       } else {
         socket.emit('login_error', { msg: 'User in wrong format' });
       }
