@@ -12,8 +12,18 @@ export class MemoryUserRepository implements UserRepository {
     this.users.push(User);
   }
 
-  removeUser(id: string): void {
-    this.users = this.users.filter((user) => user.id !== id);
+  removeUser(id: string): User | null {
+    let requestedUser = null;
+
+    this.users = this.users.filter((user: User) => {
+      if (user.id === id) {
+        requestedUser = user;
+      } else {
+        return user;
+      }
+    });
+
+    return requestedUser;
   }
 
   getUser(id: string): User | null {

@@ -44,8 +44,9 @@ const routes: SocketRoute[] = [
   {
     path: 'disconnect',
     handler: (server: Server, socket: Socket, data: any) => {
-      removeUser(userRepository, socket.id);
-      server.emit('offline', socket.id);
+      const user = removeUser(userRepository, socket.id);
+
+      server.emit('offline', user);
       server.emit('user_list', userRepository.users);
     },
   },
