@@ -22,8 +22,6 @@ const Home: React.FC = () => {
     }
 
     socket.on('login_success', (data: any) => {
-      alert('Conectado!');
-
       setUser(() => {
         return { id: data.id, name: data.name };
       });
