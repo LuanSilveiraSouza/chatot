@@ -26,7 +26,7 @@ const routes: SocketRoute[] = [
   },
   {
     path: 'message',
-    handler: (server: Server, socket: Socket, data: any) => {
+    handler: async (server: Server, socket: Socket, data: any) => {
       if ('content' in data && 'user' in data) {
         const message = new Message(
           new Date().getTime().toString(),
@@ -35,7 +35,7 @@ const routes: SocketRoute[] = [
           data.content
         );
 
-        createMessage(messageRepository, message);
+        await createMessage(messageRepository, message);
         server.emit('message', message);
       }
       socket.emit('message_error', { msg: 'Content or user not informed' });
@@ -46,6 +46,7 @@ const routes: SocketRoute[] = [
     handler: (server: Server, socket: Socket, data: any) => {
       removeUser(userRepository, socket.id);
       server.emit('offline', socket.id);
+      server.emit('user_list', userRepository.users);
     },
   },
 ];

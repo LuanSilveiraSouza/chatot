@@ -1,11 +1,11 @@
 import { Message } from '@domain/Message';
 import { MessageRepository } from './interfaces/MessageRepository';
 
-export const createMessage = (
+export const createMessage = async (
   repository: MessageRepository,
   message: Message
-): boolean => {
-  repository.addMessage(message);
+): Promise<boolean> => {
+  await repository.addMessage(message);
   return true;
 };
 
